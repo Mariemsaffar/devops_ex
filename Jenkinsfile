@@ -19,7 +19,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 script {
-                    dir('server') {
+                    dir('') {
                         sh 'ls -la' // Lists all files in the server directory
                         sh 'docker build -t saffar29/app-backend .'
                     }
@@ -50,7 +50,7 @@ pipeline {
                 // }
 
                 script {
-                    dir('server') {
+                    dir('') {
                        sh 'npm install'
                        sh 'npm test'
                     }
@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     // Login to Docker Hub and push the images
-                    docker.withRegistry('https://registry.hub.docker.com', 'saffar29') {
+                    docker.withRegistry('https://hub.docker.com/', 'saffar29') {
                         docker.image("${DOCKER_IMAGE_BACKEND}").push()
                         docker.image("${DOCKER_IMAGE_FRONTEND}").push()
                     }
