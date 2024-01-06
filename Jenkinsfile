@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define environment variables, Docker registry, etc.
-        DOCKER_IMAGE_BACKEND  = "saffar29/server:latest"
+        DOCKER_IMAGE_BACKEND  = "saffar29/app-backend:latest"
         DOCKER_IMAGE_FRONTEND = "saffar29/client:latest"
         // More environment variables can be added here
     }
@@ -21,7 +21,7 @@ pipeline {
                 script {
                     dir('server') {
                         sh 'ls -la' // Lists all files in the server directory
-                        sh 'docker build -t saffar29/server .'
+                        sh 'docker build -t saffar29/app-backend .'
                     }
                 }
             }
