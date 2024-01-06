@@ -62,7 +62,7 @@ pipeline {
         stage('Push to Registry') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-credentials-id') {
+                    docker.withRegistry('https://hub.docker.com/repositories/saffar29', 'docker-credentials-id') {
                         docker.image("${DOCKER_IMAGE_BACKEND}").push()
                         docker.image("${DOCKER_IMAGE_FRONTEND}").push()
                     }
