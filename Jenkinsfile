@@ -3,12 +3,22 @@ pipeline {
 
     environment {
         // Define environment variables, Docker registry, etc.
-        DOCKER_IMAGE_BACKEND  = "saffar29/backend:latest"
+        DOCKER_IMAGE_BACKEND  = "saffar29/mongodb_back:latest"
         DOCKER_IMAGE_FRONTEND = "saffar29/client:latest"
-        // More environment variables can be added here
+        // Add more environment variables if needed
     }
 
     stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    // Initialize global variables or perform any setup steps here
+                    // For example, you might want to clean up existing containers or volumes
+                    sh 'docker-compose down -v'
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -19,37 +29,29 @@ pipeline {
             steps {
                 script {
                     dir('server') {
-                        sh 'ls -la' // Lists all files in the server directory
-                        sh 'docker build -t saffar29/backend .'
+                        // Build backend image
+                        sh 'docker build -t saffar29/mongodb_back:latest .'
                     }
                 }
             }
         }
-
 
         stage('Build Frontend') {
             steps {
                 script {
                     dir('client') {
-                        sh 'ls -la' // Lists all files in the server directory
-                        sh 'docker build -t saffar29/client .'
+                        // Build frontend image
+                        sh 'docker build -t saffar29/client:latest .'
                     }
                 }
             }
         }
 
-
         stage('Unit Tests') {
             steps {
-                // script {
-                //     dir('client') {
-                //        sh 'ls -la' // Lists all files in the server directory
-                //        sh 'npm test'
-                //     }
-                // }
-
                 script {
                     dir('server') {
+                       // Install backend dependencies and run tests
                        sh 'npm install'
                        sh 'npm test'
                     }
@@ -59,13 +61,16 @@ pipeline {
             }
         }
 
-
         stage('Push to Registry') {
             steps {
                 script {
-                    // Login to Docker Hub and push the images
+                    // Push backend image to registry
                     docker.withRegistry('https://registry.hub.docker.com', 'saffar29') {
                         docker.image("${DOCKER_IMAGE_BACKEND}").push()
+                    }
+
+                    // Push frontend image to registry
+                    docker.withRegistry('https://registry.hub.docker.com', 'saffar29') {
                         docker.image("${DOCKER_IMAGE_FRONTEND}").push()
                     }
                 }
@@ -81,7 +86,9 @@ pipeline {
 
     post {
         always {
-            echo 'post always'
+            echo 'Cleaning up...'
+            // Perform any necessary cleanup steps here
+            sh 'docker-compose down -v'
         }
     }
 }
