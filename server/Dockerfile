@@ -1,5 +1,5 @@
 # Etape 1: Construire l'application Node.js
-FROM node:18-alpine as builder
+FROM node:18-alpine 
 
 WORKDIR /usr/src/app
 

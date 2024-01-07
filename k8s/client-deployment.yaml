@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deployment
+  name: client-deployment
 spec:
-  replicas: 5
+  replicas: 5  # Répliques du ReplicaSet
   selector:
     matchLabels:
-      app: frontend
+      app: client
   template:
     metadata:
       labels:
-        app: frontend
+        app: client
     spec:
       containers:
-        - name: frontend
-          image: saffar29/client:latest  # Remplacez par votre image Docker
+        - name: client
+          image: saffar29/client:latest
           ports:
             - containerPort: 80
+
 

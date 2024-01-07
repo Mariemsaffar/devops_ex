@@ -29,8 +29,8 @@ pipeline {
             steps {
                 script {
                     dir('server') {
-                        // Build backend image
-                        sh 'docker build -t saffar29/mongodb_back:latest .'
+                        sh 'ls -la'
+                        sh 'docker build -t saffar29/mongodb_back .'
                     }
                 }
             }
@@ -40,8 +40,8 @@ pipeline {
             steps {
                 script {
                     dir('client') {
-                        // Build frontend image
-                        sh 'docker build -t saffar29/client:latest .'
+                        sh 'ls -la'
+                        sh 'docker build -t saffar29/client .'
                     }
                 }
             }
@@ -67,12 +67,11 @@ pipeline {
                     // Push backend image to registry
                     docker.withRegistry('https://registry.hub.docker.com', 'saffar29') {
                         docker.image("${DOCKER_IMAGE_BACKEND}").push()
-                    }
-
-                    // Push frontend image to registry
-                    docker.withRegistry('https://registry.hub.docker.com', 'saffar29') {
                         docker.image("${DOCKER_IMAGE_FRONTEND}").push()
                     }
+
+                    
+            
                 }
             }
         }
@@ -87,8 +86,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            // Perform any necessary cleanup steps here
-            sh 'docker-compose down -v'
+         
         }
     }
 }
